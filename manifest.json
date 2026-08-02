@@ -1,0 +1,24 @@
+{
+  "name": "Trilha Rachel's English - Where to Start",
+  "short_name": "Trilha Rachel",
+  "description": "Trilha de aprendizado com video, resumo, dicionario IPA e atividades para cada aula da playlist Where to Start",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#14181a",
+  "theme_color": "#14181a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

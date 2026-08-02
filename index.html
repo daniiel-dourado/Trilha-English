@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Trilha Rachel's English</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#14181a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Trilha Rachel">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="eyebrow">Trilha de Pronúncia</div>
+      <h1>Rachel's English — Where to Start</h1>
+      <div class="overall-progress-track"><div class="overall-progress-fill" id="overall-fill"></div></div>
+      <div class="overall-progress-label" id="overall-label">0 de 29 aulas concluídas</div>
+    </div>
+    <ol class="path-list" id="path-list"></ol>
+  </aside>
+
+  <main>
+    <button class="mobile-toggle" id="mobile-toggle">☰ Trilha de aulas</button>
+
+    <div class="lesson-eyebrow" id="lesson-eyebrow">Aula 1 de 29</div>
+    <h1 class="lesson-title" id="lesson-title">—</h1>
+
+    <div class="video-wrap">
+      <iframe id="video-frame" src="" title="video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <div class="mark-done-row">
+      <button class="mark-done-btn" id="mark-done-btn">Marcar aula como concluída</button>
+    </div>
+
+    <section class="block">
+      <div class="block-head">
+        <div class="block-icon">📝</div>
+        <h2>Resumo do tema</h2>
+      </div>
+      <div class="summary-text" id="summary-text"></div>
+    </section>
+
+    <section class="block">
+      <div class="block-head">
+        <div class="block-icon">🔊</div>
+        <h2>Dicionário IPA desta aula</h2>
+      </div>
+      <div class="ipa-chip-grid" id="ipa-grid"></div>
+    </section>
+
+    <section class="block">
+      <div class="block-head">
+        <div class="block-icon">🎯</div>
+        <h2>Atividade</h2>
+      </div>
+      <div class="quiz-card" id="quiz-card"></div>
+    </section>
+
+    <div class="lesson-nav">
+      <button class="lesson-nav-btn" id="prev-btn">← Aula anterior</button>
+      <button class="lesson-nav-btn" id="next-btn">Próxima aula →</button>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ============ LESSON DATA ============ */
+/* Original summaries and exercises written independently - not transcribed from the videos. */
+
+const lessons = [
+  {
+    id: "oWP9Riq-ZBg",
+    title: "How to Introduce Yourself",
+    tag: "Conversação",
+    summary: [
+      "Esta aula foca em como se apresentar naturalmente em inglês americano — as frases mais comuns usadas para dizer seu nome, cumprimentar e iniciar uma conversa.",
+      "O destaque fica no ritmo da fala: em inglês, certas palavras recebem mais força (stress) que outras dentro da frase. Uma apresentação soa mais natural quando você marca bem a sílaba tônica do seu próprio nome, e mantém palavras de função (like 'my', 'is') mais rápidas e leves.",
+      "Contrações como 'I'm' no lugar de 'I am' são o padrão em fala natural — evitá-las deixa o discurso soando mais formal e menos natural do que os nativos normalmente falam no dia a dia."
+    ],
+    ipa: [
+      { word: "introduce", ipa: "ˌɪntrəˈduːs" },
+      { word: "name", ipa: "neɪm" },
+      { word: "nice", ipa: "naɪs" },
+      { word: "meet", ipa: "miːt" },
+      { word: "I'm", ipa: "aɪm" }
+    ],
+    quiz: [
+      { type: "mc", q: "Qual é a forma mais natural de se apresentar em inglês falado?", options: ["I am Daniel", "I'm Daniel", "I be Daniel", "Me is Daniel"], correct: 1, explain: "Contrações como 'I'm' são o padrão em fala natural — dizer 'I am' completo soa mais formal." },
+      { type: "mc", q: "Na frase 'Nice to meet you', qual palavra tende a receber mais força (stress)?", options: ["to", "you", "meet", "nice"], correct: 2, explain: "'Meet' carrega o significado principal da frase, então recebe mais stress que as palavras de função ao redor." },
+      { type: "type", q: "Complete: 'My ___ is Daniel.' (nome)", answer: "name", explain: "'Name' é a palavra usada para se referir ao próprio nome ao se apresentar." }
+    ]
+  },
+  {
+    id: "m3g51xfopIE",
+    title: "Como melhorar seu inglês falado (sotaque americano)",
+    tag: "Sotaque",
+    summary: [
+      "Este vídeo apresenta uma visão geral de como trabalhar a pronúncia do inglês americano de forma estruturada — cobrindo sons individuais, ritmo de frase e entonação como as três camadas principais do sotaque.",
+      "A ideia central é que sotaque não é sobre 'imitar' um som isolado, mas sobre treinar o sistema inteiro: boca, ritmo e melodia da fala trabalhando juntos.",
+      "Repetição consciente (shadowing) é apontada como a ferramenta mais eficaz: ouvir um trecho curto e repetir imitando exatamente o que se ouviu, sem tentar traduzir mentalmente."
+    ],
+    ipa: [
+      { word: "accent", ipa: "ˈæksɛnt" },
+      { word: "practice", ipa: "ˈpræktɪs" },
+      { word: "rhythm", ipa: "ˈrɪðəm" },
+      { word: "sound", ipa: "saʊnd" },
+      { word: "improve", ipa: "ɪmˈpruːv" }
+    ],
+    quiz: [
+      { type: "mc", q: "Segundo o vídeo, sotaque é resultado de quantas camadas trabalhando juntas?", options: ["Só os sons individuais", "Sons, ritmo e entonação", "Só a velocidade da fala", "Só o vocabulário"], correct: 1, explain: "Sotaque é o conjunto de sons, ritmo de frase e entonação (melodia) trabalhando juntos — não apenas um som isolado." },
+      { type: "mc", q: "Qual técnica é recomendada como a mais eficaz para treinar pronúncia?", options: ["Traduzir mentalmente", "Decorar regras gramaticais", "Shadowing (repetir imitando o áudio)", "Ler sem áudio"], correct: 2, explain: "Shadowing — repetir em voz alta imitando exatamente o áudio ouvido — treina boca, ritmo e melodia ao mesmo tempo." },
+      { type: "type", q: "Complete: I want to ___ my English pronunciation. (melhorar)", answer: "improve", explain: "'Improve' significa melhorar, aperfeiçoar." }
+    ]
+  },
+  {
+    id: "orWL34vG3tY",
+    title: "How to say HELLO! How are you? Greet Americans",
+    tag: "Conversação",
+    summary: [
+      "Esta aula detalha as várias formas de cumprimentar alguém em inglês americano, além do básico 'Hello' — incluindo variações mais casuais usadas no dia a dia entre nativos.",
+      "Destaque para a pergunta 'How are you?', que na prática funciona mais como uma saudação social do que uma pergunta literal — a resposta esperada geralmente é curta e positiva, não uma descrição detalhada do seu dia.",
+      "A entonação de subida no final de perguntas de saudação é um padrão melódico comum que ajuda a soar mais natural e convidativo."
+    ],
+    ipa: [
+      { word: "hello", ipa: "hɛˈloʊ" },
+      { word: "how", ipa: "haʊ" },
+      { word: "greet", ipa: "ɡriːt" },
+      { word: "fine", ipa: "faɪn" },
+      { word: "you", ipa: "juː" }
+    ],
+    quiz: [
+      { type: "mc", q: "Na prática social americana, 'How are you?' funciona principalmente como:", options: ["Uma pergunta que exige resposta detalhada", "Uma saudação social com resposta curta", "Uma pergunta médica", "Uma despedida"], correct: 1, explain: "'How are you?' é mais uma saudação social do que uma pergunta literal — a resposta esperada é curta." },
+      { type: "mc", q: "Qual é uma resposta natural e comum para 'How are you?'", options: ["I am experiencing several emotions today", "Fine, thanks! How about you?", "That is a personal question", "No"], correct: 1, explain: "Respostas curtas e positivas seguidas de devolver a pergunta são o padrão social em inglês." },
+      { type: "type", q: "Complete: Hello! How are ___?", answer: "you", explain: "'You' completa a saudação padrão 'How are you?'." }
+    ]
+  },
+  {
+    id: "5sxXkh3wb5Y",
+    title: "Expressões Idiomáticas em Inglês Norte-Americano",
+    tag: "Vocabulário",
+    summary: [
+      "Este vídeo apresenta expressões idiomáticas comuns do inglês americano — frases cujo significado não pode ser entendido apenas traduzindo palavra por palavra.",
+      "O foco é mostrar como essas expressões aparecem naturalmente em conversas do dia a dia, e por que aprendê-las é essencial para soar mais natural, já que nativos as usam com muita frequência sem perceber.",
+      "Idiomas geralmente carregam contexto cultural, então entender o significado por trás da expressão (não só a tradução literal) é a chave para usá-las corretamente."
+    ],
+    ipa: [
+      { word: "idiom", ipa: "ˈɪdiəm" },
+      { word: "expression", ipa: "ɪkˈsprɛʃən" },
+      { word: "meaning", ipa: "ˈmiːnɪŋ" },
+      { word: "common", ipa: "ˈkɒmən" },
+      { word: "natural", ipa: "ˈnætʃərəl" }
+    ],
+    quiz: [
+      { type: "mc", q: "O que caracteriza uma expressão idiomática?", options: ["Pode ser traduzida palavra por palavra", "Seu significado não é literal", "Só é usada em contextos formais", "É sempre uma única palavra"], correct: 1, explain: "Expressões idiomáticas têm significado figurado — traduzir literalmente geralmente não faz sentido." },
+      { type: "mc", q: "Por que é importante aprender idiomas (expressões idiomáticas)?", options: ["Porque são usadas raramente", "Porque nativos as usam com muita frequência no dia a dia", "Porque substituem toda a gramática", "Porque só aparecem em livros"], correct: 1, explain: "Native speakers usam expressões idiomáticas constantemente em conversas informais." },
+      { type: "type", q: "Complete: An idiom's ___ is not literal. (significado)", answer: "meaning", explain: "'Meaning' significa significado." }
+    ]
+  },
+  {
+    id: "MzhjD-XrYjg",
+    title: "Como pronunciar contrações no inglês",
+    tag: "Pronúncia",
+    summary: [
+      "Este vídeo ensina como contrações (como 'don't', 'can't', 'I'll') são pronunciadas na fala natural, muitas vezes de forma ainda mais reduzida do que a forma escrita sugere.",
+      "Contrações existem justamente para tornar a fala mais rápida e fluida — evitar usá-las na fala (falando cada palavra por extenso) é um dos maiores sinais de sotaque não-nativo.",
+      "O vídeo reforça que reconhecer contrações no ouvido é tão importante quanto conseguir produzi-las, já que elas mudam bastante o som da frase comparado à forma escrita."
+    ],
+    ipa: [
+      { word: "don't", ipa: "doʊnt" },
+      { word: "can't", ipa: "kænt" },
+      { word: "I'll", ipa: "aɪl" },
+      { word: "contraction", ipa: "kənˈtrækʃən" },
+      { word: "won't", ipa: "woʊnt" }
+    ],
+    quiz: [
+      { type: "mc", q: "Por que os nativos usam tantas contrações na fala?", options: ["Para parecer mais formal", "Para tornar a fala mais rápida e fluida", "Porque é regra gramatical obrigatória", "Só em textos escritos"], correct: 1, explain: "Contrações tornam a fala mais natural e fluida — é o padrão real de como os nativos falam." },
+      { type: "mc", q: "Evitar contrações completamente na fala geralmente resulta em:", options: ["Sotaque mais nativo", "Fala soando mais formal/não-natural", "Melhor compreensão sempre", "Nenhuma diferença perceptível"], correct: 1, explain: "Falar tudo por extenso, sem contrair, é um dos sinais mais comuns de sotaque não-nativo." },
+      { type: "type", q: "Complete a contração: I ___ (will) call you later. Escreva a forma contraída de 'I will'.", answer: "i'll", explain: "'I will' se contrai para 'I'll' na fala natural." }
+    ]
+  },
+  {
+    id: "beo1mezedJw",
+    title: "What did you do Today? (Estudo de Pronúncia)",
+    tag: "Conversação",
+    summary: [
+      "Este vídeo usa uma pergunta simples e comum do dia a dia — 'What did you do today?' — como estudo de caso para pronúncia natural em contexto de conversa real.",
+      "O foco está em como as palavras se conectam (linking) dentro da frase, e como certas partes da pergunta são pronunciadas de forma reduzida quando falada rápido, comparado a quando é lida palavra por palavra.",
+      "Esse tipo de estudo é útil porque mostra a diferença entre 'inglês de livro' e como a frase realmente soa na boca de um falante nativo em conversa espontânea."
+    ],
+    ipa: [
+      { word: "today", ipa: "təˈdeɪ" },
+      { word: "did", ipa: "dɪd" },
+      { word: "what", ipa: "wʌt" },
+      { word: "do", ipa: "duː" },
+      { word: "study", ipa: "ˈstʌdi" }
+    ],
+    quiz: [
+      { type: "mc", q: "Qual é o objetivo de um 'estudo de conversação' como este?", options: ["Decorar vocabulário novo", "Ver como a frase soa na fala natural e conectada", "Aprender gramática formal", "Praticar apenas leitura silenciosa"], correct: 1, explain: "O estudo foca em como as palavras se conectam e reduzem na fala real, diferente do inglês 'de livro'." },
+      { type: "mc", q: "O que geralmente acontece com frases quando faladas rapidamente por nativos?", options: ["Cada palavra é pronunciada isoladamente e devagar", "Palavras se conectam e algumas partes reduzem", "A gramática muda completamente", "Elas ficam mais formais"], correct: 1, explain: "Na fala rápida e natural, palavras se conectam (linking) e algumas sílabas reduzem." },
+      { type: "type", q: "Complete: What did you do ___? (hoje)", answer: "today", explain: "'Today' significa hoje." }
+    ]
+  },
+  {
+    id: "UNnzPydhQXU",
+    title: "How to Link the TH Sound",
+    tag: "Fonética",
+    summary: [
+      "Este vídeo foca no som TH (como em 'this', 'think') e em como ele se conecta com as palavras ao redor dentro de uma frase — um dos sons mais desafiadores para falantes de português, já que não existe equivalente direto.",
+      "O som TH tem duas variações: uma surda (sem vibração das cordas vocais, como em 'think') e uma sonora (com vibração, como em 'this'). A posição da língua entre os dentes é a chave para produzir ambas corretamente.",
+      "Além do som isolado, o vídeo mostra como o TH se comporta quando está entre duas palavras — geralmente conectando suavemente ao som seguinte, sem pausa."
+    ],
+    ipa: [
+      { word: "think", ipa: "θɪŋk" },
+      { word: "this", ipa: "ðɪs" },
+      { word: "brother", ipa: "ˈbrʌðər" },
+      { word: "three", ipa: "θriː" },
+      { word: "father", ipa: "ˈfɑːðər" }
+    ],
+    quiz: [
+      { type: "mc", q: "Quantas variações principais o som TH tem?", options: ["Uma só", "Duas: surda e sonora", "Três", "Nenhuma, é sempre igual"], correct: 1, explain: "TH tem uma versão surda /θ/ (think) e uma sonora /ð/ (this), diferenciadas pela vibração das cordas vocais." },
+      { type: "mc", q: "Onde a língua deve ficar posicionada para produzir o som TH?", options: ["Atrás dos dentes superiores", "Entre os dentes", "No fundo da garganta", "Encostada no céu da boca"], correct: 1, explain: "O som TH exige que a língua fique entre os dentes — posição que não existe em nenhum som do português." },
+      { type: "type", q: "Qual destas palavras tem o som TH SONORO (com vibração)? Digite: this ou think", answer: "this", explain: "'This' usa o TH sonoro /ð/, enquanto 'think' usa o TH surdo /θ/." }
+    ]
+  },
+  {
+    id: "-stGMAQTibc",
+    title: "'gonna' e 'gotta': redução na fala",
+    tag: "Redução",
+    summary: [
+      "Este vídeo explica as formas reduzidas 'gonna' (going to) e 'gotta' (got to/have got to) — extremamente comuns na fala informal americana, mas raramente ensinadas em livros didáticos tradicionais.",
+      "Essas reduções acontecem porque, na fala rápida, certas combinações de sons naturalmente 'colapsam' em algo mais curto e fácil de pronunciar. Isso não é 'errado' ou preguiçoso — é o padrão real da fala nativa informal.",
+      "É importante notar que 'gonna' e 'gotta' são usados na fala, não na escrita formal — reconhecê-los no ouvido é essencial para entender conversas reais, filmes e séries."
+    ],
+    ipa: [
+      { word: "gonna", ipa: "ˈɡʌnə" },
+      { word: "gotta", ipa: "ˈɡɑːtə" },
+      { word: "going", ipa: "ˈɡoʊɪŋ" },
+      { word: "reduction", ipa: "rɪˈdʌkʃən" },
+      { word: "informal", ipa: "ɪnˈfɔːrməl" }
+    ],
+    quiz: [
+      { type: "mc", q: "'Gonna' é a forma reduzida de qual expressão?", options: ["Go now", "Going to", "Gone away", "Got now"], correct: 1, explain: "'Gonna' vem da redução de 'going to' na fala rápida e informal." },
+      { type: "mc", q: "Onde 'gonna' e 'gotta' são apropriados?", options: ["Em textos formais e e-mails de trabalho", "Na fala informal do dia a dia", "Apenas em documentos legais", "Nunca são apropriados"], correct: 1, explain: "São formas de fala informal — não aparecem em escrita formal, mas são extremamente comuns faladas." },
+      { type: "type", q: "Complete: I'm ___ (gonna) call you tomorrow. Escreva a forma reduzida de 'going to'.", answer: "gonna", explain: "'Gonna' é a redução informal falada de 'going to'." }
+    ]
+  },
+  {
+    id: "LnXUl2e2Np0",
+    title: "How to Pronounce the Alphabet",
+    tag: "Fonética",
+    summary: [
+      "Este vídeo cobre a pronúncia correta de cada letra do alfabeto em inglês americano — muitas letras soam de forma bem diferente do que se imagina ao comparar com o português.",
+      "Um ponto de atenção comum é que várias letras (como 'H', 'W', 'R') têm nomes que não correspondem intuitivamente ao som que representam nas palavras, o que confunde bastante iniciantes.",
+      "Saber soletrar corretamente em inglês (por telefone, em formulários, em nomes) é uma habilidade prática essencial, já que é comum ser pedido para soletrar seu nome ou e-mail em situações reais."
+    ],
+    ipa: [
+      { word: "alphabet", ipa: "ˈælfəbɛt" },
+      { word: "letter", ipa: "ˈlɛtər" },
+      { word: "spell", ipa: "spɛl" },
+      { word: "H (letra)", ipa: "eɪtʃ" },
+      { word: "W (letra)", ipa: "ˈdʌbəl.juː" }
+    ],
+    quiz: [
+      { type: "mc", q: "Por que aprender a pronúncia do alfabeto é útil na prática?", options: ["Só serve para crianças aprendendo a ler", "É necessário para soletrar nomes e e-mails em situações reais", "Não tem uso prático no dia a dia", "Só é usado em provas escolares"], correct: 1, explain: "Soletrar corretamente é comum em ligações, formulários e situações do dia a dia nos EUA." },
+      { type: "mc", q: "O nome de várias letras do alfabeto inglês:", options: ["Sempre soa igual ao som que a letra representa nas palavras", "Pode ser bem diferente do som que a letra representa", "Não existe em inglês", "É idêntico ao português"], correct: 1, explain: "Letras como H, W e R têm nomes que não correspondem diretamente ao som que fazem dentro de palavras." },
+      { type: "type", q: "Como se pronuncia a letra 'H' foneticamente? (dica: rima com 'age')", answer: "eɪtʃ", explain: "A letra H se pronuncia /eɪtʃ/, algo como 'eitch'." }
+    ]
+  },
+  {
+    id: "c97xwLdSsXU",
+    title: "American English Vowels - IPA",
+    tag: "Fonética",
+    summary: [
+      "Este vídeo apresenta uma visão geral do sistema de vogais do inglês americano usando o alfabeto fonético internacional (IPA) — mostrando como cada símbolo corresponde a um som específico.",
+      "O ponto central é que o inglês tem muito mais sons vocálicos distintos do que o português, incluindo pares que podem soar parecidos para ouvidos não-treinados (como /iː/ em 'seat' vs /ɪ/ em 'sit'), mas que mudam completamente o significado da palavra.",
+      "Entender o IPA das vogais dá uma base sólida para estudar pronúncia de forma sistemática, ao invés de tentar adivinhar o som pela ortografia da palavra (que no inglês é frequentemente enganosa)."
+    ],
+    ipa: [
+      { word: "seat", ipa: "siːt" },
+      { word: "sit", ipa: "sɪt" },
+      { word: "vowel", ipa: "ˈvaʊəl" },
+      { word: "sound", ipa: "saʊnd" },
+      { word: "symbol", ipa: "ˈsɪmbəl" }
+    ],
+    quiz: [
+      { type: "mc", q: "Por que o IPA é útil para estudar pronúncia do inglês?", options: ["Porque a ortografia do inglês sempre reflete o som exato", "Porque cada símbolo IPA representa um único som, diferente da ortografia", "Porque substitui a necessidade de ouvir áudio nativo", "Porque só é usado em dicionários antigos"], correct: 1, explain: "A ortografia do inglês é frequentemente enganosa — o IPA representa o som real de forma consistente." },
+      { type: "mc", q: "'Seat' e 'sit' diferem por qual tipo de som?", options: ["Consoante inicial", "Vogal (som vocálico)", "Consoante final", "Não há diferença de som"], correct: 1, explain: "'Seat' usa /iː/ (longo) e 'sit' usa /ɪ/ (curto) — um par vocálico clássico que muda o significado." },
+      { type: "type", q: "Complete: English has more vowel ___ than Portuguese. (sons)", answer: "sounds", explain: "'Sounds' significa sons." }
+    ]
+  },
+  {
+    id: "RVJ-kEAx7Pw",
+    title: "Inglês Americano versus Inglês Britânico",
+    tag: "Comparação",
+    summary: [
+      "Este vídeo compara as principais diferenças de pronúncia entre o inglês americano e o britânico — dois dos sotaques mais influentes e ensinados no mundo.",
+      "Uma das diferenças mais marcantes é o som do 'R': no inglês americano, o R é pronunciado sempre que aparece na escrita (rótico), enquanto no britânico tradicional, o R no final de sílaba geralmente não é pronunciado.",
+      "Outras diferenças incluem o som de certas vogais (como em 'dance' ou 'bath') e o ritmo geral da fala. Entender essas diferenças ajuda o aprendiz a escolher conscientemente qual sotaque quer desenvolver, ao invés de misturar os dois sem perceber."
+    ],
+    ipa: [
+      { word: "car (americano)", ipa: "kɑːr" },
+      { word: "car (britânico)", ipa: "kɑː" },
+      { word: "dance", ipa: "dæns" },
+      { word: "accent", ipa: "ˈæksɛnt" },
+      { word: "different", ipa: "ˈdɪfərənt" }
+    ],
+    quiz: [
+      { type: "mc", q: "Qual é uma diferença marcante entre o R americano e o britânico?", options: ["Não há diferença nenhuma", "O R americano é pronunciado no final de sílaba, o britânico tradicional geralmente não", "O britânico sempre pronuncia mais R que o americano", "Ambos nunca pronunciam o R"], correct: 1, explain: "Inglês americano é 'rótico' (pronuncia o R sempre); britânico tradicional geralmente omite o R final de sílaba." },
+      { type: "mc", q: "Por que é útil entender as diferenças entre os sotaques?", options: ["Para nunca aprender nenhum dos dois", "Para escolher conscientemente qual sotaque desenvolver", "Porque são idênticos e não importa", "Só é relevante para professores"], correct: 1, explain: "Entender as diferenças ajuda a manter consistência ao invés de misturar os dois sotaques sem intenção." },
+      { type: "type", q: "No inglês americano, a palavra 'car' termina com o som de qual letra? (r)", answer: "r", explain: "No inglês americano (rótico), o R é pronunciado mesmo no final da palavra." }
+    ]
+  },
+  {
+    id: "j_e6yJ8rhIg",
+    title: "BEACH vs. BITCH e SHEET vs. SHIT",
+    tag: "Fonética",
+    summary: [
+      "Este vídeo aborda um dos pares vocálicos mais importantes (e potencialmente constrangedores) do inglês: a diferença entre /iː/ e /ɪ/, que muda completamente o significado — e a formalidade — de certas palavras.",
+      "A diferença está na duração e tensão da vogal: /iː/ é mais longa e com a boca mais esticada; /ɪ/ é mais curta e relaxada. Confundir os dois sons pode gerar mal-entendidos significativos em conversas reais.",
+      "O vídeo usa esse par de palavras justamente porque o erro é comum e o resultado é notável — funciona como um lembrete forte para prestar atenção extra nesse contraste vocálico específico."
+    ],
+    ipa: [
+      { word: "beach", ipa: "biːtʃ" },
+      { word: "sheet", ipa: "ʃiːt" },
+      { word: "long vowel", ipa: "lɔːŋ ˈvaʊəl" },
+      { word: "short vowel", ipa: "ʃɔːrt ˈvaʊəl" },
+      { word: "difference", ipa: "ˈdɪfərəns" }
+    ],
+    quiz: [
+      { type: "mc", q: "Qual é a diferença técnica entre os sons /iː/ e /ɪ/?", options: ["Não há diferença nenhuma", "/iː/ é mais longo e tenso; /ɪ/ é mais curto e relaxado", "/ɪ/ é sempre mais longo", "São a mesma vogal em contextos diferentes"], correct: 1, explain: "/iː/ (como em 'beach') é longo e com boca mais esticada; /ɪ/ é curto e relaxado." },
+      { type: "mc", q: "Por que esse par de sons recebe atenção especial no estudo de pronúncia?", options: ["Porque não faz diferença nenhuma no significado", "Porque a confusão pode gerar mal-entendidos significativos", "Porque só afeta a escrita, nunca a fala", "Porque é raro aparecer em conversas"], correct: 1, explain: "Confundir esses sons pode mudar completamente o significado de uma palavra, gerando mal-entendidos reais." },
+      { type: "type", q: "Qual vogal é mais LONGA: /iː/ ou /ɪ/? Digite o símbolo sem as barras.", answer: "iː", explain: "/iː/ é a vogal longa (como em 'beach', 'sheet')." }
+    ]
+  },
+  {
+    id: "7tsljuK4f2E",
+    title: "How to Pronounce GOT IT",
+    tag: "Redução",
+    summary: [
+      "Este vídeo foca na expressão comum 'Got it!' (usada para dizer 'entendi' ou 'peguei'), mostrando como ela é pronunciada na fala real — com o T frequentemente virando uma consoante rápida e leve (flap T), parecida com um D rápido.",
+      "Esse fenômeno de 'flap T' é extremamente comum no inglês americano entre vogais, e é uma das razões pelas quais palavras escritas com T às vezes soam mais como D na fala rápida.",
+      "Reconhecer esse padrão ajuda tanto na compreensão auditiva (entender nativos falando rápido) quanto na produção (soar mais natural ao usar expressões do dia a dia)."
+    ],
+    ipa: [
+      { word: "got it", ipa: "ˈɡɑrɪt" },
+      { word: "flap T", ipa: "flæp tiː" },
+      { word: "water", ipa: "ˈwɔːrər" },
+      { word: "better", ipa: "ˈbɛrər" },
+      { word: "understand", ipa: "ˌʌndərˈstænd" }
+    ],
+    quiz: [
+      { type: "mc", q: "O que é o 'flap T' no inglês americano?", options: ["Um T sempre pronunciado forte", "Um T entre vogais que soa como um D rápido", "Uma letra que nunca é pronunciada", "Um som exclusivo do inglês britânico"], correct: 1, explain: "O flap T é quando o T entre vogais na fala rápida soa parecido com um D rápido/leve." },
+      { type: "mc", q: "Em qual destas palavras o flap T provavelmente aparece?", options: ["Stop", "Water", "Cat", "Test"], correct: 1, explain: "'Water' tem o T entre vogais, ambiente clássico para o flap T (soando como 'wader')." },
+      { type: "type", q: "Complete: I ___ it! (peguei/entendi)", answer: "got", explain: "'Got it!' é uma expressão comum que significa 'entendi' ou 'peguei'." }
+    ]
+  },
+  {
+    id: "tlHngoCOVO4",
+    title: "Linking: Consonant to Vowel",
+    tag: "Linking",
+    summary: [
+      "Este vídeo explica como consoantes no final de uma palavra se conectam com vogais no início da palavra seguinte — um dos padrões de linking mais comuns e importantes da fala natural em inglês.",
+      "Quando uma palavra termina em consoante e a próxima começa com vogal, os nativos geralmente 'movem' aquela consoante para começar a próxima sílaba, criando uma conexão suave entre as palavras (por exemplo, 'turn it' soa como 'tur-nit').",
+      "Esse padrão é uma das principais razões pelas quais a fala nativa soa 'colada', diferente da pronúncia separada e pausada de palavra por palavra que aprendizes costumam usar no início."
+    ],
+    ipa: [
+      { word: "turn it", ipa: "ˈtɜːr.nɪt" },
+      { word: "linking", ipa: "ˈlɪŋkɪŋ" },
+      { word: "consonant", ipa: "ˈkɒnsənənt" },
+      { word: "vowel", ipa: "ˈvaʊəl" },
+      { word: "connect", ipa: "kəˈnɛkt" }
+    ],
+    quiz: [
+      { type: "mc", q: "O que acontece quando uma palavra termina em consoante e a próxima começa com vogal?", options: ["Sempre há uma pausa entre as palavras", "A consoante geralmente se conecta ao início da próxima palavra", "As duas palavras nunca se conectam", "A vogal desaparece completamente"], correct: 1, explain: "A consoante final tende a 'migrar' para iniciar a sílaba seguinte, criando conexão suave (linking)." },
+      { type: "mc", q: "Por que a fala nativa soa mais 'colada' que a de iniciantes?", options: ["Porque nativos falam mais devagar", "Por causa do linking entre palavras", "Porque usam palavras diferentes", "Não há diferença real"], correct: 1, explain: "O linking entre consoantes e vogais é uma das principais razões da fala soar conectada e natural." },
+      { type: "type", q: "Complete: Turn ___ off (desligue-o — 'it')", answer: "it", explain: "'Turn it off' — o T de 'turn' se conecta ao 'it' na fala natural." }
+    ]
+  },
+  {
+    id: "WctUiZ9ij0c",
+    title: "English Conversation & Idioms",
+    tag: "Conversação",
+    summary: [
+      "Este vídeo combina o estudo de uma conversa real com expressões idiomáticas usadas naturalmente dentro dela, mostrando como idiomas aparecem organicamente em contextos do dia a dia.",
+      "A abordagem de estudar uma conversa completa (ao invés de frases isoladas) ajuda a perceber como ritmo, entonação e vocabulário idiomático trabalham juntos numa interação real.",
+      "É reforçado que entender o contexto da conversa é tão importante quanto entender cada palavra individualmente — muitas vezes o significado de uma expressão só fica claro observando a situação ao redor dela."
+    ],
+    ipa: [
+      { word: "conversation", ipa: "ˌkɒnvərˈseɪʃən" },
+      { word: "context", ipa: "ˈkɒntɛkst" },
+      { word: "situation", ipa: "ˌsɪtʃuˈeɪʃən" },
+      { word: "naturally", ipa: "ˈnætʃərəli" },
+      { word: "expression", ipa: "ɪkˈsprɛʃən" }
+    ],
+    quiz: [
+      { type: "mc", q: "Por que estudar uma conversa completa é útil (não só frases soltas)?", options: ["Não traz nenhum benefício extra", "Mostra como ritmo, entonação e idiomas trabalham juntos naturalmente", "É mais difícil de entender", "Só serve para avançados"], correct: 1, explain: "Uma conversa completa mostra a integração natural entre ritmo, melodia e vocabulário idiomático." },
+      { type: "mc", q: "O significado de uma expressão idiomática muitas vezes fica mais claro através de:", options: ["Tradução literal palavra por palavra", "O contexto/situação ao redor dela", "Ignorar completamente a situação", "Decorar sem entender o uso"], correct: 1, explain: "O contexto da conversa ajuda a entender o real significado e uso de uma expressão idiomática." },
+      { type: "type", q: "Complete: Pay attention to the ___ of the conversation. (contexto)", answer: "context", explain: "'Context' significa contexto." }
+    ]
+  },
+  {
+    id: "0SqoJip29rw",
+    title: "How to Pronounce I'LL THINK ABOUT IT",
+    tag: "Redução",
+    summary: [
+      "Este vídeo detalha a pronúncia natural da frase 'I'll think about it' (vou pensar sobre isso), mostrando como várias palavras se reduzem e conectam quando faladas em velocidade normal.",
+      "Frases curtas e comuns como esta costumam sofrer bastante redução na fala espontânea: 'I'll' vira quase um som só, e 'about it' se conecta suavemente através de linking.",
+      "O vídeo reforça a importância de estudar frases completas e comuns do dia a dia, já que a pronúncia de uma frase inteira muitas vezes é bem diferente da soma das pronúncias de cada palavra isolada."
+    ],
+    ipa: [
+      { word: "I'll", ipa: "aɪl" },
+      { word: "think", ipa: "θɪŋk" },
+      { word: "about", ipa: "əˈbaʊt" },
+      { word: "it", ipa: "ɪt" },
+      { word: "phrase", ipa: "freɪz" }
+    ],
+    quiz: [
+      { type: "mc", q: "Por que estudar frases completas (não só palavras isoladas) é importante?", options: ["A pronúncia da frase inteira pode ser bem diferente da soma das palavras isoladas", "Não faz diferença nenhuma", "Só é útil para quem já é fluente", "Palavras isoladas sempre soam igual em frases"], correct: 0, explain: "Redução e linking mudam significativamente como uma frase soa comparada a cada palavra pronunciada isoladamente." },
+      { type: "mc", q: "O que tende a acontecer com 'I'll' na fala rápida?", options: ["É sempre pronunciado bem separado e devagar", "Reduz e soa quase como um som só", "Desaparece completamente da frase", "Vira uma palavra completamente diferente"], correct: 1, explain: "'I'll' reduz bastante na fala natural, soando quase como uma única sílaba rápida." },
+      { type: "type", q: "Complete: I'll ___ about it. (pensar)", answer: "think", explain: "'Think' significa pensar." }
+    ]
+  },
+  {
+    id: "p8DJFNjZiIM",
+    title: "How to Pronounce WATER",
+    tag: "Fonética",
+    summary: [
+      "Este vídeo foca especificamente na pronúncia da palavra 'water' no inglês americano — uma palavra comum que costuma soar bem diferente do que a ortografia sugere para não-nativos.",
+      "O T em 'water' geralmente vira um flap T (soando como um D rápido) porque está entre duas vogais, fazendo a palavra soar mais como 'wader' do que como um T forte tradicional.",
+      "Esse é um exemplo prático e muito citado de como uma única palavra comum do dia a dia pode revelar várias regras de pronúncia natural (flap T, redução vocálica) ao mesmo tempo."
+    ],
+    ipa: [
+      { word: "water", ipa: "ˈwɔːrər" },
+      { word: "flap", ipa: "flæp" },
+      { word: "vowel", ipa: "ˈvaʊəl" },
+      { word: "between", ipa: "bɪˈtwiːn" },
+      { word: "common word", ipa: "ˈkɒmən wɜːrd" }
+    ],
+    quiz: [
+      { type: "mc", q: "Por que 'water' costuma soar como 'wader' no inglês americano?", options: ["É um erro de pronúncia", "O T está entre vogais e vira um flap T", "A palavra muda de significado", "Isso só acontece no inglês britânico"], correct: 1, explain: "O T entre vogais em 'water' sofre o fenômeno de flap T, soando parecido com um D rápido." },
+      { type: "mc", q: "'Water' é um bom exemplo de estudo porque:", options: ["É uma palavra rara", "É comum e revela várias regras de pronúncia ao mesmo tempo", "Só é usada em contextos formais", "Não tem nenhuma regra especial"], correct: 1, explain: "É uma palavra do dia a dia que demonstra flap T e outros padrões de pronúncia natural de forma clara." },
+      { type: "type", q: "O T de 'water' geralmente soa parecido com qual outra letra na fala rápida?", answer: "d", explain: "O flap T faz o T soar parecido com um D rápido e leve." }
+    ]
+  },
+  {
+    id: "D_npkVsb25o",
+    title: "American English Pronunciation: Intonation",
+    tag: "Entonação",
+    summary: [
+      "Este vídeo explica a entonação (a 'melodia' da fala) no inglês americano — como a voz sobe e desce ao longo de uma frase para comunicar significado, emoção e intenção.",
+      "Perguntas de sim/não geralmente têm entonação de subida no final, enquanto perguntas com 'wh-' (what, where, why) e afirmações geralmente descem. Essa melodia ajuda o ouvinte a entender rapidamente que tipo de frase está sendo dita.",
+      "Entonação errada pode fazer uma frase soar rude, confusa, ou mudar completamente a intenção comunicada — mesmo que as palavras e a gramática estejam corretas."
+    ],
+    ipa: [
+      { word: "intonation", ipa: "ˌɪntoʊˈneɪʃən" },
+      { word: "rising", ipa: "ˈraɪzɪŋ" },
+      { word: "falling", ipa: "ˈfɔːlɪŋ" },
+      { word: "melody", ipa: "ˈmɛlədi" },
+      { word: "meaning", ipa: "ˈmiːnɪŋ" }
+    ],
+    quiz: [
+      { type: "mc", q: "Perguntas de sim/não geralmente têm que tipo de entonação no final?", options: ["Descendente", "Ascendente (subida)", "Sempre plana, sem variação", "Não têm entonação nenhuma"], correct: 1, explain: "Perguntas de sim/não tipicamente sobem no final ('Are you coming?' ↗)." },
+      { type: "mc", q: "O que pode acontecer se a entonação de uma frase estiver errada?", options: ["Nada muda, é só decoração", "Pode soar rude, confuso, ou mudar a intenção comunicada", "A gramática automaticamente fica errada também", "Só afeta a escrita"], correct: 1, explain: "Entonação carrega significado e intenção — errá-la pode causar mal-entendidos mesmo com gramática correta." },
+      { type: "type", q: "Complete: Questions with 'what' or 'why' usually have ___ intonation. (descendente)", answer: "falling", explain: "'Falling' significa descendente — perguntas com wh- geralmente descem no final." }
+    ]
+  },
+  {
+    id: "4ogrBNpHPos",
+    title: "Shoulda, woulda, coulda",
+    tag: "Redução",
+    summary: [
+      "Este vídeo explora as formas reduzidas 'shoulda', 'woulda' e 'coulda' — versões faladas informais de 'should have', 'would have' e 'could have', extremamente comuns na fala espontânea.",
+      "Essas reduções acontecem porque 'have' nessas construções perde força e vira um som curto e fraco (schwa), que na escrita informal às vezes é representado como 'a'.",
+      "Reconhecer essas formas no ouvido é essencial, já que elas aparecem constantemente em filmes, séries e conversas reais — mas nunca são usadas dessa forma na escrita formal."
+    ],
+    ipa: [
+      { word: "should have", ipa: "ˈʃʊdəv" },
+      { word: "would have", ipa: "ˈwʊdəv" },
+      { word: "could have", ipa: "ˈkʊdəv" },
+      { word: "reduced", ipa: "rɪˈduːst" },
+      { word: "spoken", ipa: "ˈspoʊkən" }
+    ],
+    quiz: [
+      { type: "mc", q: "'Shoulda' é a forma reduzida falada de qual expressão?", options: ["Should have", "Should do", "Show her", "Should of course"], correct: 0, explain: "'Shoulda' vem da redução de 'should have' na fala rápida e informal." },
+      { type: "mc", q: "Onde essas formas reduzidas (shoulda, woulda, coulda) aparecem?", options: ["Em e-mails formais de trabalho", "Na fala espontânea, filmes e séries", "Apenas em documentos jurídicos", "Nunca são usadas"], correct: 1, explain: "São formas de fala informal, muito comuns em conversas reais, filmes e séries — nunca na escrita formal." },
+      { type: "type", q: "Complete a forma reduzida falada: I ___ (should have) called you. Escreva a versão reduzida.", answer: "shoulda", explain: "'Shoulda' é a redução falada de 'should have'." }
+    ]
+  },
+  {
+    id: "0nwbzoIP14E",
+    title: "\"Full Pronunciation\" is WRONG",
+    tag: "Conceito",
+    summary: [
+      "Este vídeo desafia a ideia de que pronunciar cada palavra de forma completa e separada é a forma 'correta' de falar inglês — na verdade, essa abordagem soa artificial e não-natural para ouvidos nativos.",
+      "O argumento central é que redução, linking e formas fracas de palavras de função (como 'to', 'for', 'and') não são erros ou 'preguiça' — são características estruturais reais do inglês falado natural.",
+      "Esse vídeo é importante para destravar a mentalidade de muitos aprendizes que acham que precisam pronunciar tudo 'perfeitamente' e devagar — na real, isso os afasta de soar natural, ao invés de aproximar."
+    ],
+    ipa: [
+      { word: "full", ipa: "fʊl" },
+      { word: "wrong", ipa: "rɔːŋ" },
+      { word: "natural", ipa: "ˈnætʃərəl" },
+      { word: "reduce", ipa: "rɪˈduːs" },
+      { word: "artificial", ipa: "ˌɑːrtɪˈfɪʃəl" }
+    ],
+    quiz: [
+      { type: "mc", q: "Segundo este vídeo, pronunciar cada palavra completa e separadamente:", options: ["É sempre a forma correta e deve ser o objetivo final", "Soa artificial e não-natural para ouvidos nativos", "É como todos os nativos falam", "Não faz diferença nenhuma"], correct: 1, explain: "Falar tudo 'completo e separado' soa artificial — redução e linking são o padrão natural real." },
+      { type: "mc", q: "Redução e linking na fala são consideradas:", options: ["Erros que devem ser eliminados", "Preguiça dos falantes", "Características estruturais reais do inglês falado", "Um problema só de sotaques regionais"], correct: 2, explain: "Redução e linking são parte estrutural do inglês falado natural, não erros ou preguiça." },
+      { type: "type", q: "Complete: Full pronunciation, word by word, sounds ___ (não-natural, um pouco estranho).", answer: "artificial", explain: "'Artificial' captura a ideia de soar não-natural ou forçado." }
+    ]
+  },
+  {
+    id: "DJrJgD2ziQM",
+    title: "How to Pronounce 'to the' in a Sentence",
+    tag: "Redução",
+    summary: [
+      "Este vídeo foca na pronúncia natural da combinação 'to the', extremamente comum em inglês, mas que quase nunca soa como as palavras separadas sugerem na escrita.",
+      "Ambas as palavras são palavras de função (function words), que naturalmente reduzem e perdem força na fala conectada — 'to the' tende a soar rápido e comprimido, quase como uma única unidade sonora.",
+      "Estudar combinações específicas como essa ajuda a treinar o ouvido para reconhecer padrões que se repetem constantemente em qualquer conversa em inglês."
+    ],
+    ipa: [
+      { word: "to the", ipa: "tə ðə" },
+      { word: "function word", ipa: "ˈfʌŋkʃən wɜːrd" },
+      { word: "reduced", ipa: "rɪˈduːst" },
+      { word: "combination", ipa: "ˌkɒmbɪˈneɪʃən" },
+      { word: "connected", ipa: "kəˈnɛktɪd" }
+    ],
+    quiz: [
+      { type: "mc", q: "'To' e 'the' são exemplos de que tipo de palavra?", options: ["Palavras de conteúdo (substantivos, verbos)", "Palavras de função (function words)", "Nomes próprios", "Interjeições"], correct: 1, explain: "'To' e 'the' são function words — palavras gramaticais que carregam pouco significado sozinhas e tendem a reduzir." },
+      { type: "mc", q: "Function words como 'to the' geralmente são pronunciadas:", options: ["Sempre com força total e devagar", "De forma reduzida e rápida na fala conectada", "Nunca aparecem na fala natural", "Apenas em contextos escritos"], correct: 1, explain: "Function words reduzem naturalmente na fala rápida e conectada." },
+      { type: "type", q: "Complete: I'm going ___ the store. (to)", answer: "to", explain: "'To' completa a frase 'going to the store'." }
+    ]
+  },
+  {
+    id: "IFlAxjA4_nA",
+    title: "How to Pronounce the word BECAUSE",
+    tag: "Fonética",
+    summary: [
+      "Este vídeo foca na pronúncia da palavra 'because', muito comum, mas que costuma ser mal pronunciada por aprendizes que seguem a ortografia literalmente.",
+      "Na fala natural e rápida, 'because' frequentemente reduz para uma forma ainda mais curta, como 'cuz' ou 'cause', especialmente em conversas informais.",
+      "O vídeo mostra a diferença entre a pronúncia cuidadosa (usada ao explicar ou ensinar) e a pronúncia rápida do dia a dia — ambas válidas, dependendo do contexto e formalidade da situação."
+    ],
+    ipa: [
+      { word: "because", ipa: "bɪˈkɔːz" },
+      { word: "cuz", ipa: "kəz" },
+      { word: "cause", ipa: "kɔːz" },
+      { word: "reason", ipa: "ˈriːzən" },
+      { word: "informal", ipa: "ɪnˈfɔːrməl" }
+    ],
+    quiz: [
+      { type: "mc", q: "Na fala informal e rápida, 'because' costuma reduzir para:", options: ["Uma palavra completamente diferente e sem relação", "'Cuz' ou 'cause'", "Nunca reduz, é sempre pronunciada completa", "Vira 'why'"], correct: 1, explain: "'Because' comumente reduz para 'cuz' ou 'cause' em contextos informais e fala rápida." },
+      { type: "mc", q: "A pronúncia cuidadosa vs. a reduzida de 'because' depende de:", options: ["Não depende de nada, é sempre igual", "Contexto e nível de formalidade da situação", "Apenas da região dos EUA", "Apenas da idade do falante"], correct: 1, explain: "O nível de formalidade e a velocidade da fala determinam se a forma completa ou reduzida é usada." },
+      { type: "type", q: "Qual é a forma reduzida informal e mais curta de 'because'? (3 letras)", answer: "cuz", explain: "'Cuz' é a redução informal mais comum de 'because'." }
+    ]
+  },
+  {
+    id: "jobiAHhNotA",
+    title: "Tongue Relaxation Exercises",
+    tag: "Exercício Vocal",
+    summary: [
+      "Este vídeo apresenta exercícios físicos de relaxamento da língua, parte de uma série voltada para preparar a boca e os músculos da fala para pronúncia mais natural do inglês.",
+      "A ideia por trás desses exercícios é que tensão excessiva na língua e na mandíbula pode dificultar a produção de sons específicos do inglês que não existem no idioma nativo do aprendiz.",
+      "Praticar relaxamento vocal antes de sessões de pronúncia é comparável ao aquecimento antes de atividade física — prepara o 'instrumento' (voz e articulação) para performar melhor."
+    ],
+    ipa: [
+      { word: "tongue", ipa: "tʌŋ" },
+      { word: "relax", ipa: "rɪˈlæks" },
+      { word: "exercise", ipa: "ˈɛksərsaɪz" },
+      { word: "muscle", ipa: "ˈmʌsəl" },
+      { word: "tension", ipa: "ˈtɛnʃən" }
+    ],
+    quiz: [
+      { type: "mc", q: "Qual é o objetivo dos exercícios de relaxamento da língua?", options: ["Enfraquecer a fala", "Preparar a boca para produzir sons do inglês com menos tensão", "Substituir a prática de pronúncia", "Não tem objetivo real"], correct: 1, explain: "Relaxar a língua e mandíbula ajuda a produzir sons não-nativos com mais facilidade e naturalidade." },
+      { type: "mc", q: "A analogia usada para esses exercícios é parecida com:", options: ["Aquecimento antes de atividade física", "Uma prova escrita", "Uma leitura silenciosa", "Um teste de gramática"], correct: 0, explain: "Assim como aquecer músculos antes de exercício, relaxar a boca prepara para melhor articulação." },
+      { type: "type", q: "Complete: These exercises help relax your ___ (língua) before speaking.", answer: "tongue", explain: "'Tongue' significa língua." }
+    ]
+  },
+  {
+    id: "kANHsMZvhvQ",
+    title: "How to Link words that begin with H",
+    tag: "Linking",
+    summary: [
+      "Este vídeo mostra um padrão específico de linking: como palavras que começam com H (especialmente pronomes como 'he', 'her', 'him') frequentemente têm o H 'engolido' ou reduzido na fala rápida e conectada.",
+      "Isso acontece principalmente quando essas palavras aparecem no meio de uma frase, sem ênfase — por exemplo, 'tell him' pode soar mais como 'tell 'im', com o H praticamente desaparecendo.",
+      "Reconhecer esse padrão é essencial para compreensão auditiva, já que a ausência do H pode inicialmente confundir quem está acostumado a esperar o som completo da palavra escrita."
+    ],
+    ipa: [
+      { word: "him", ipa: "ɪm" },
+      { word: "her", ipa: "ər" },
+      { word: "he", ipa: "iː" },
+      { word: "tell him", ipa: "ˈtɛlɪm" },
+      { word: "silent H", ipa: "ˈsaɪlənt eɪtʃ" }
+    ],
+    quiz: [
+      { type: "mc", q: "O que geralmente acontece com o H de palavras como 'him' e 'her' na fala conectada?", options: ["É sempre pronunciado com força extra", "Frequentemente é reduzido ou 'engolido'", "Nunca aparece em pronomes", "Vira um som completamente diferente"], correct: 1, explain: "O H em pronomes átonos como 'him' e 'her' costuma reduzir ou desaparecer na fala rápida." },
+      { type: "mc", q: "Por que reconhecer essa redução do H é importante?", options: ["Não tem importância prática", "Ajuda na compreensão auditiva de fala natural", "Só importa para quem escreve, não fala", "É exclusivo de um sotaque regional raro"], correct: 1, explain: "Reconhecer o H reduzido evita confusão ao ouvir frases conectadas naturalmente." },
+      { type: "type", q: "Complete: Tell ___ to call me. (ele — pronome objeto)", answer: "him", explain: "'Him' é o pronome objeto para 'ele'." }
+    ]
+  },
+  {
+    id: "l9BvnCtHDvs",
+    title: "How to Pronounce 'Schedule'",
+    tag: "Fonética",
+    summary: [
+      "Este vídeo foca na pronúncia da palavra 'schedule', que tem uma particularidade interessante: pode ser pronunciada de forma diferente entre o inglês americano e o britânico.",
+      "No inglês americano, o início da palavra soa como 'sk', enquanto no britânico tradicional pode soar como 'sh' — uma das exceções que mostram como a ortografia do inglês nem sempre indica claramente o som correto.",
+      "Esse tipo de palavra reforça a importância de aprender pronúncias específicas ao invés de tentar aplicar regras gerais demais, já que o inglês tem muitas exceções assim."
+    ],
+    ipa: [
+      { word: "schedule (americano)", ipa: "ˈskɛdʒuːl" },
+      { word: "schedule (britânico)", ipa: "ˈʃɛdjuːl" },
+      { word: "exception", ipa: "ɪkˈsɛpʃən" },
+      { word: "spelling", ipa: "ˈspɛlɪŋ" },
+      { word: "specific", ipa: "spəˈsɪfɪk" }
+    ],
+    quiz: [
+      { type: "mc", q: "Como 'schedule' geralmente começa no inglês americano?", options: ["Som de 'sh'", "Som de 'sk'", "Som de 'ch'", "Som de 'z'"], correct: 1, explain: "No inglês americano, 'schedule' geralmente começa com som de 'sk' (/skɛdʒuːl/)." },
+      { type: "mc", q: "O que 'schedule' demonstra sobre a ortografia do inglês?", options: ["Que ela sempre indica o som exato", "Que existem exceções onde a grafia não reflete o som de forma óbvia", "Que só existe uma forma correta de pronunciar qualquer palavra", "Que não há diferença entre variantes do inglês"], correct: 1, explain: "'Schedule' é um exemplo de exceção, com pronúncias diferentes entre variantes do inglês." },
+      { type: "type", q: "No inglês americano, 'schedule' começa com o som de quais duas letras?", answer: "sk", explain: "No inglês americano, o início soa como 'sk'." }
+    ]
+  },
+  {
+    id: "-i7-DDAW-ok",
+    title: "How to Practice English Pronunciation - Interview Study",
+    tag: "Método",
+    summary: [
+      "Este vídeo apresenta uma metodologia de estudo baseada em analisar entrevistas reais — assistindo, transcrevendo trechos e depois praticando a pronúncia exata do que foi dito por um falante nativo.",
+      "Essa técnica é uma forma estruturada de shadowing: ao invés de imitar frases aleatórias, o aprendiz estuda um pedaço real de fala espontânea, prestando atenção em cada redução, ligação e padrão de entonação.",
+      "O método é apresentado como uma forma avançada de estudo, ideal para quem já tem uma base e quer refinar a pronúncia até um nível bem próximo do nativo, através de prática repetida e deliberada."
+    ],
+    ipa: [
+      { word: "interview", ipa: "ˈɪntərvjuː" },
+      { word: "practice", ipa: "ˈpræktɪs" },
+      { word: "transcribe", ipa: "trænˈskraɪb" },
+      { word: "repeat", ipa: "rɪˈpiːt" },
+      { word: "method", ipa: "ˈmɛθəd" }
+    ],
+    quiz: [
+      { type: "mc", q: "Em que consiste o método de 'estudo de entrevista'?", options: ["Ler um texto em voz alta sem áudio", "Analisar e imitar a fala real de uma entrevista nativa", "Decorar vocabulário isolado", "Assistir sem prestar atenção à pronúncia"], correct: 1, explain: "O método envolve estudar um trecho real de fala espontânea nativa e replicar sua pronúncia exata." },
+      { type: "mc", q: "Para quem esse método é mais indicado?", options: ["Apenas iniciantes completos", "Quem já tem uma base e quer refinar a pronúncia", "Apenas professores de inglês", "Não é indicado para ninguém"], correct: 1, explain: "É uma técnica mais avançada, ideal para refinar pronúncia após já ter uma base construída." },
+      { type: "type", q: "Complete: I like to ___ interviews to study real pronunciation. (praticar)", answer: "practice", explain: "'Practice' significa praticar." }
+    ]
+  },
+  {
+    id: "2BmkUa4Mv60",
+    title: "Do e Does - Redução na Pronúncia",
+    tag: "Redução",
+    summary: [
+      "Este vídeo explica como os auxiliares 'do' e 'does' são pronunciados na fala natural — frequentemente reduzidos e quase inaudíveis em perguntas rápidas do dia a dia.",
+      "Por serem palavras de função usadas principalmente para formar perguntas (não carregam significado central), 'do' e 'does' tendem a perder força e reduzir bastante, às vezes quase desaparecendo no início de perguntas informais.",
+      "Reconhecer essa redução é importante porque, ao ouvir inglês nativo rápido, uma pergunta como 'Do you want it?' pode soar muito mais curta e comprimida do que a versão escrita sugere."
+    ],
+    ipa: [
+      { word: "do you", ipa: "dʒə" },
+      { word: "does he", ipa: "dəzi" },
+      { word: "auxiliary", ipa: "ɔːɡˈzɪljəri" },
+      { word: "question", ipa: "ˈkwɛstʃən" },
+      { word: "reduced", ipa: "rɪˈduːst" }
+    ],
+    quiz: [
+      { type: "mc", q: "Por que 'do' e 'does' reduzem tanto na fala rápida?", options: ["Porque são palavras de função sem muito significado central", "Porque são sempre a parte mais importante da frase", "Isso nunca acontece na prática", "Porque são palavras raras"], correct: 0, explain: "Como function words usadas para formar perguntas, 'do'/'does' carregam pouco peso semântico e reduzem facilmente." },
+      { type: "mc", q: "'Do you' na fala rápida pode soar como:", options: ["Sempre exatamente como está escrito, sem mudança", "Uma forma reduzida e comprimida, tipo 'd'you'", "Uma palavra completamente diferente sem relação", "Nunca é usado em perguntas"], correct: 1, explain: "'Do you' comumente reduz para algo como 'd'you' ou similar na fala natural rápida." },
+      { type: "type", q: "Complete: ___ you want some coffee? (Do)", answer: "do", explain: "'Do' é o auxiliar usado para formar a pergunta." }
+    ]
+  },
+  {
+    id: "SIojtnMplHc",
+    title: "REHEMA ELLIS - Interview a Broadcaster",
+    tag: "Método",
+    summary: [
+      "Este vídeo apresenta uma entrevista real com uma jornalista/apresentadora, usada como material de estudo de pronúncia autêntica e fala profissional em inglês americano.",
+      "Analisar a fala de profissionais de mídia (broadcasters) é útil porque geralmente combina clareza de dicção com o ritmo natural da fala conectada — um bom equilíbrio para quem estuda pronúncia.",
+      "O vídeo reforça o valor de expor-se a diferentes vozes e estilos de fala nativa (não só a professora do canal), já que cada pessoa tem nuances próprias de ritmo e entonação dentro do mesmo sotaque geral."
+    ],
+    ipa: [
+      { word: "broadcaster", ipa: "ˈbrɔːdkæstər" },
+      { word: "interview", ipa: "ˈɪntərvjuː" },
+      { word: "professional", ipa: "prəˈfɛʃənəl" },
+      { word: "clarity", ipa: "ˈklærəti" },
+      { word: "authentic", ipa: "ɔːˈθɛntɪk" }
+    ],
+    quiz: [
+      { type: "mc", q: "Por que estudar a fala de broadcasters (apresentadores/jornalistas) é útil?", options: ["Eles nunca falam de forma clara", "Combinam clareza de dicção com ritmo natural da fala conectada", "Só usam vocabulário técnico irrelevante", "Não é útil, deveria ser evitado"], correct: 1, explain: "Broadcasters geralmente têm dicção clara mantendo o ritmo natural — um bom modelo de estudo." },
+      { type: "mc", q: "Por que é bom expor-se a diferentes vozes nativas (não só uma professora)?", options: ["Não faz diferença nenhuma", "Cada pessoa tem nuances próprias de ritmo e entonação dentro do sotaque", "Só existe uma forma de falar inglês americano", "É melhor ouvir sempre a mesma voz"], correct: 1, explain: "Diferentes falantes nativos têm variações individuais que enriquecem a compreensão auditiva geral." },
+      { type: "type", q: "Complete: She works as a ___ (apresentadora/jornalista) on TV.", answer: "broadcaster", explain: "'Broadcaster' significa apresentador(a) ou jornalista de mídia." }
+    ]
+  },
+  {
+    id: "yBtMwyQFXwA",
+    title: "American English - AA [æ] Vowel",
+    tag: "Fonética",
+    summary: [
+      "Este vídeo foca especificamente no som vocálico /æ/ (como em 'cat', 'hat'), um dos sons vocálicos mais característicos do inglês americano e frequentemente difícil para falantes de português.",
+      "Para produzir esse som corretamente, a boca precisa abrir bem mais do que o normal em português, com a língua numa posição baixa e frontal — é um som mais 'espalhado' do que qualquer vogal equivalente em português.",
+      "Esse som aparece em muitíssimas palavras comuns do inglês, então dominar sua articulação correta tem um impacto amplo na naturalidade geral da pronúncia."
+    ],
+    ipa: [
+      { word: "cat", ipa: "kæt" },
+      { word: "hat", ipa: "hæt" },
+      { word: "man", ipa: "mæn" },
+      { word: "bad", ipa: "bæd" },
+      { word: "apple", ipa: "ˈæpəl" }
+    ],
+    quiz: [
+      { type: "mc", q: "Como a boca deve se posicionar para produzir o som /æ/?", options: ["Bem fechada e arredondada", "Bem aberta, língua baixa e frontal", "Igual à vogal 'a' do português", "Com os lábios projetados para frente"], correct: 1, explain: "O som /æ/ exige abertura ampla da boca com a língua numa posição baixa e frontal, diferente do 'a' do português." },
+      { type: "mc", q: "Por que dominar o som /æ/ é importante?", options: ["Porque é um som raro no inglês", "Porque aparece em muitíssimas palavras comuns", "Porque só é usado em contextos técnicos", "Não tem impacto real na pronúncia geral"], correct: 1, explain: "É um som extremamente frequente no inglês, então sua correta articulação impacta a naturalidade geral da fala." },
+      { type: "type", q: "Digite uma palavra comum que tenha o som /æ/ (ex: gato).", answer: "cat", explain: "'Cat' é um exemplo clássico do som /æ/." }
+    ]
+  }
+];
+
+/* ============ STATE ============ */
+
+let currentLessonIndex = 0;
+let completedLessons = new Set();
+let quizState = {};
+
+const pathList = document.getElementById('path-list');
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebar-overlay');
+const mobileToggle = document.getElementById('mobile-toggle');
+const overallFill = document.getElementById('overall-fill');
+const overallLabel = document.getElementById('overall-label');
+const lessonEyebrow = document.getElementById('lesson-eyebrow');
+const lessonTitle = document.getElementById('lesson-title');
+const videoFrame = document.getElementById('video-frame');
+const markDoneBtn = document.getElementById('mark-done-btn');
+const summaryText = document.getElementById('summary-text');
+const ipaGrid = document.getElementById('ipa-grid');
+const quizCard = document.getElementById('quiz-card');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+
+function renderPath() {
+  pathList.innerHTML = '';
+  lessons.forEach((lesson, i) => {
+    const li = document.createElement('li');
+    li.className = 'path-item' + (i === currentLessonIndex ? ' active' : '') + (completedLessons.has(i) ? ' done' : '');
+    li.innerHTML = `
+      <div class="path-marker">${completedLessons.has(i) ? '✓' : i + 1}</div>
+      <div class="path-text">
+        <div class="path-title">${lesson.title}</div>
+        <div class="path-tag">${lesson.tag}</div>
+      </div>
+    `;
+    li.addEventListener('click', () => {
+      currentLessonIndex = i;
+      loadLesson();
+      if (window.innerWidth <= 860) closeSidebar();
+    });
+    pathList.appendChild(li);
+  });
+  const doneCount = completedLessons.size;
+  const pct = (doneCount / lessons.length) * 100;
+  overallFill.style.width = `${pct}%`;
+  overallLabel.textContent = `${doneCount} de ${lessons.length} aulas concluídas`;
+}
+
+function speak(text, rate) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US';
+  utter.rate = rate || 0.85;
+  window.speechSynthesis.speak(utter);
+}
+
+function renderIPA(lesson) {
+  ipaGrid.innerHTML = '';
+  lesson.ipa.forEach(item => {
+    const chip = document.createElement('div');
+    chip.className = 'ipa-chip';
+    chip.innerHTML = `
+      <span class="ipa-symbol">/${item.ipa}/</span>
+      <span class="ipa-word">${item.word}</span>
+      <span class="ipa-play">🔊</span>
+    `;
+    chip.addEventListener('click', () => {
+      chip.classList.add('playing');
+      speak(item.word.replace(/\s*\(.*?\)\s*/g, ''), 0.8);
+      setTimeout(() => chip.classList.remove('playing'), 700);
+    });
+    ipaGrid.appendChild(chip);
+  });
+}
+
+function renderQuiz(lessonIndex) {
+  const lesson = lessons[lessonIndex];
+  if (!quizState[lessonIndex]) {
+    quizState[lessonIndex] = { current: 0, answered: {}, score: 0 };
+  }
+  const state = quizState[lessonIndex];
+  const qIndex = state.current;
+  const question = lesson.quiz[qIndex];
+  const alreadyAnswered = state.answered[qIndex] !== undefined;
+
+  let html = `<div class="quiz-progress">Pergunta ${qIndex + 1} de ${lesson.quiz.length}</div>`;
+  html += `<div class="quiz-question">${question.q}</div>`;
+
+  if (question.type === 'mc') {
+    html += `<div class="quiz-options" id="quiz-options-wrap">`;
+    question.options.forEach((opt, i) => {
+      let cls = 'quiz-option';
+      if (alreadyAnswered) {
+        if (i === question.correct) cls += ' correct';
+        else if (i === state.answered[qIndex] && i !== question.correct) cls += ' incorrect';
+      }
+      html += `<button class="${cls}" data-i="${i}" ${alreadyAnswered ? 'disabled' : ''}>${opt}</button>`;
+    });
+    html += `</div>`;
+  } else {
+    html += `<div class="quiz-input-row">
+      <input type="text" id="quiz-type-input" placeholder="digite sua resposta…" autocomplete="off" ${alreadyAnswered ? 'disabled' : ''} value="${alreadyAnswered ? question.answer : ''}"/>
+      <button class="quiz-submit" id="quiz-type-submit" ${alreadyAnswered ? 'disabled' : ''}>Verificar</button>
+    </div>`;
+  }
+
+  html += `<div class="quiz-feedback ${alreadyAnswered ? 'show ' + (isAnswerCorrect(question, state.answered[qIndex]) ? 'correct' : 'incorrect') : ''}" id="quiz-feedback">`;
+  if (alreadyAnswered) {
+    html += isAnswerCorrect(question, state.answered[qIndex])
+      ? `<b>Certo!</b> ${question.explain}`
+      : `<b>Quase.</b> ${question.explain}`;
+  }
+  html += `</div>`;
+
+  html += `<div class="quiz-nav">
+    <button class="quiz-nav-btn" id="quiz-prev" ${qIndex === 0 ? 'disabled' : ''}>← Anterior</button>
+    <span class="quiz-score">Pontuação: <b>${state.score}</b> / ${lesson.quiz.length}</span>
+    <button class="quiz-nav-btn" id="quiz-next" ${qIndex === lesson.quiz.length - 1 ? 'disabled' : ''}>Próxima →</button>
+  </div>`;
+
+  quizCard.innerHTML = html;
+
+  if (question.type === 'mc') {
+    document.querySelectorAll('#quiz-options-wrap .quiz-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = parseInt(btn.dataset.i);
+        answerQuiz(lessonIndex, qIndex, i);
+      });
+    });
+  } else {
+    const input = document.getElementById('quiz-type-input');
+    const submit = document.getElementById('quiz-type-submit');
+    const submitFn = () => {
+      const val = input.value.trim().toLowerCase();
+      if (!val) return;
+      answerQuiz(lessonIndex, qIndex, val);
+    };
+    submit.addEventListener('click', submitFn);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitFn(); });
+    if (!alreadyAnswered) input.focus();
+  }
+
+  document.getElementById('quiz-prev').addEventListener('click', () => {
+    state.current = Math.max(0, qIndex - 1);
+    renderQuiz(lessonIndex);
+  });
+  document.getElementById('quiz-next').addEventListener('click', () => {
+    state.current = Math.min(lesson.quiz.length - 1, qIndex + 1);
+    renderQuiz(lessonIndex);
+  });
+}
+
+function isAnswerCorrect(question, given) {
+  if (question.type === 'mc') return given === question.correct;
+  return given === question.answer.toLowerCase();
+}
+
+function answerQuiz(lessonIndex, qIndex, given) {
+  const lesson = lessons[lessonIndex];
+  const question = lesson.quiz[qIndex];
+  const state = quizState[lessonIndex];
+  if (state.answered[qIndex] !== undefined) return;
+
+  state.answered[qIndex] = given;
+  const correct = isAnswerCorrect(question, given);
+  if (correct) state.score += 1;
+
+  if (question.type === 'type' && correct) {
+    speak(question.answer, 0.85);
+  }
+
+  renderQuiz(lessonIndex);
+}
+
+function loadLesson() {
+  const lesson = lessons[currentLessonIndex];
+  lessonEyebrow.textContent = `Aula ${currentLessonIndex + 1} de ${lessons.length} · ${lesson.tag}`;
+  lessonTitle.textContent = lesson.title;
+  videoFrame.src = `https://www.youtube.com/embed/${lesson.id}`;
+  summaryText.innerHTML = lesson.summary.map(p => `<p>${p}</p>`).join('');
+  renderIPA(lesson);
+  renderQuiz(currentLessonIndex);
+  markDoneBtn.classList.toggle('done', completedLessons.has(currentLessonIndex));
+  markDoneBtn.textContent = completedLessons.has(currentLessonIndex) ? '✓ Aula concluída' : 'Marcar aula como concluída';
+  prevBtn.disabled = currentLessonIndex === 0;
+  nextBtn.disabled = currentLessonIndex === lessons.length - 1;
+  renderPath();
+  window.scrollTo(0, 0);
+}
+
+markDoneBtn.addEventListener('click', () => {
+  if (completedLessons.has(currentLessonIndex)) {
+    completedLessons.delete(currentLessonIndex);
+  } else {
+    completedLessons.add(currentLessonIndex);
+  }
+  markDoneBtn.classList.toggle('done');
+  markDoneBtn.textContent = completedLessons.has(currentLessonIndex) ? '✓ Aula concluída' : 'Marcar aula como concluída';
+  renderPath();
+});
+
+prevBtn.addEventListener('click', () => {
+  if (currentLessonIndex > 0) { currentLessonIndex -= 1; loadLesson(); }
+});
+nextBtn.addEventListener('click', () => {
+  if (currentLessonIndex < lessons.length - 1) { currentLessonIndex += 1; loadLesson(); }
+});
+
+function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('show'); }
+function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('show'); }
+mobileToggle.addEventListener('click', openSidebar);
+sidebarOverlay.addEventListener('click', closeSidebar);
+
+loadLesson();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>
