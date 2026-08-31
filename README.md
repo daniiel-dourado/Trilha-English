@@ -67,7 +67,7 @@ O conteúdo e a estrutura seguem princípios de métodos reconhecidos de aquisi�
 
 ## Aviso sobre direitos autorais
 
-Os resumos de cada aula são **conteúdo original**, escrito de forma independente com base no tema geral de cada vídeo — **não são transcrições** do que Rachel's English efetivamente fala. Os vídeos em si são incorporados via player oficial do YouTube (embed), sem download ou redistribuição do conteúdo audiovisual.
+Os resumos de cada aula são **conteúdo original**, escrito de forma independente com base no tema geral de cada vídeo — **não são transcrições** do que Rachel's English efetivamente fala. Os vídeos em si são incorporados via player oficial do YouTube (embed), sem download ou redistribuição do conteúdo audiovisual, projeto independente da Rachel’s English.
 
 ---
 
